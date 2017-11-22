@@ -1,11 +1,11 @@
 clc;
-filename = 'ddSports1/ddSports1-003.MP4';
-% filename = 'sonySix2.mp4';
+% filename = 'ddSports1/ddSports1-002.MP4';
+filename = 'sonySix1.mp4';
 % filename = 'Demo.mp4';
 % filename = 'football/football-005.mp4';
 % filename = '2538-5_70133.avi';
 
-load('LogoModelRealData.mat', 'classificationMdlSVM', 'logoClassNames');
+load('LogoModelRealData.mat', 'classificationMdlSVM', 'logoClassNames', 'expectedLogoCorners');
 if ~exist('classificationMdlSVM', 'var') || ~exist('logoClassNames', 'var') || ~exist('expectedLogoCorners', 'var')
     disp('Status: SVM Classification Model not found.');
     disp('Status: Exiting...');
@@ -71,6 +71,9 @@ disk5px = strel('disk',5);
 h = figure('Name','Disk 5px Morphological Operarions','NumberTitle','off');
 for j = 1 : 4
     fprintf('Status: Processing Corner %d.\n', j);
+    ocrResults = ocr(corners(:,:,:,13,j));
+    recognizedText = ocrResults.Text;
+    fprintf('Status: Text in Corner %d: %s.\n', j, recognizedText);
     closedLogoMask(:,:,j) = imclose(binaryLogoMask(:,:,j), disk5px);
     holeFilledLogoMask(:,:,j) = imfill(closedLogoMask(:,:,j),'holes');
     openedLogoMask(:,:,j) = imopen(holeFilledLogoMask(:,:,j), disk5px);
