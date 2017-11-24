@@ -3,7 +3,7 @@ logoClasses = 5;
 
 logoClassNames      = {'DD Sports', 'ESPN', 'Sony Six Old', 'Star Sports New', 'Ten Sports'};
 % classLabels       = [      1    ,    2  ,        3      ,          4       ,       5     ];
-expectedLogoCorners = [      2,        4,          2,                2,              2     ];
+expectedLogoCorners = [      2,        2,          2,                2,              2     ];
 
 totalObservations = getTotalPNGs(allLogoDir);
 featureVectorSize = 75;
@@ -26,7 +26,7 @@ end
 
 classificationMdlSVM = fitcecoc(trainingData, trainingLabels);
 % saveCompactModel(Mdl, 'LogoModelECOC');
-save('LogoModelRealData.mat', 'classificationMdlSVM', 'logoClassNames', 'expectedLogoCorners');
+save('LogoModelRealDataWithOriginal.mat', 'classificationMdlSVM', 'logoClassNames', 'expectedLogoCorners');
 
 % img = imread('Sony_SIX_old.svg.png');
 % getGridDescriptors(img);
