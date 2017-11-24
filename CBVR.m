@@ -1,11 +1,17 @@
 clc;
-% filename = 'ddSports1/ddSports1-002.MP4';
-filename = 'sonySix1.mp4';
-% filename = 'Demo.mp4';
+% filename = 'DDSports/ddSports1-002.MP4'; %logo
+% filename = 'SonySix/sonySix2.mp4'; %logo, danger in sport
+filename = 'SonySix/sonySix2-005_2.mp4'; %keep0 both football
+% filename = 'SonySix/1 (1).mp4'; %keep both danger
+% filename = 'football.mp4'; %sport
 % filename = 'football/football-005.mp4';
+% filename = 'TenSports/Demo.mp4'; %keep0 both cricket
+% filename = 'TenSports/1-001.mp4'; %keep both
+% filename = 'TenSports/2-002.mp4';
 % filename = '2538-5_70133.avi';
 
-load('LogoModelRealData.mat', 'classificationMdlSVM', 'logoClassNames', 'expectedLogoCorners');
+%% Load SVM Model
+load('LogoModelRealDataWithOriginal.mat', 'classificationMdlSVM', 'logoClassNames', 'expectedLogoCorners');
 if ~exist('classificationMdlSVM', 'var') || ~exist('logoClassNames', 'var') || ~exist('expectedLogoCorners', 'var')
     disp('Status: SVM Classification Model not found.');
     disp('Status: Exiting...');
@@ -15,8 +21,22 @@ else
     featureVectorSize = length(classificationMdlSVM.PredictorNames);
 end
 
-keyFrames = getKeyFrames(filename); disp('Status: Key Frames Extracted.');
-corners = getCorners(keyFrames);    disp('Status: Corners Extracted.');
+%% Control Variables
+showOutput = false;
+sportRecognitionEnabled = false;
+saveResults = true;
+
+%% Result saving functionality
+if saveResults
+    resultFolder = strcat(strrep(filename, '.', '_'), '_results');
+    resultFile = fullfile(resultFolder, 'Results.txt');
+    mkdir(resultFolder);
+    fileID = fopen(resultFile,'wt');
+    fclose(fileID);
+end
+
+%% CBVR Start
+corners = getKeyframeCorners(filename);    disp('Status: Key Frame Corners Extracted.');
 cornerHeight = size(corners,1);
 cornerWidth = size(corners,2);
 numFrames = size(corners, 4);
@@ -24,7 +44,9 @@ numFrames = size(corners, 4);
 currentEdgeField = zeros(cornerHeight, cornerWidth, 4);
 timeAveragedEdgeField = zeros(cornerHeight, cornerWidth, 4);
 
-figure;
+if showOutput
+    figure;
+end
 for i = 1 : numFrames
     alpha = getAlpha(i);
     for j = 1 : 4
@@ -32,18 +54,20 @@ for i = 1 : numFrames
         timeAveragedEdgeField(:,:,j) = alpha*timeAveragedEdgeField(:,:,j) + (1-alpha)*currentEdgeField(:,:,j);
     end
     
-    subplot(3,4,1), imshow(corners(:,:,:,i,1)), title(sprintf('Frame %d', i));
-    subplot(3,4,2), imshow(corners(:,:,:,i,2));
-    subplot(3,4,3), imshow(corners(:,:,:,i,3));
-    subplot(3,4,4), imshow(corners(:,:,:,i,4));
-    subplot(3,4,5), imshow(currentEdgeField(:,:,1));
-    subplot(3,4,6), imshow(currentEdgeField(:,:,2));
-    subplot(3,4,7), imshow(currentEdgeField(:,:,3));
-    subplot(3,4,8), imshow(currentEdgeField(:,:,4));
-    subplot(3,4,9), imshow(timeAveragedEdgeField(:,:,1));
-    subplot(3,4,10), imshow(timeAveragedEdgeField(:,:,2));
-    subplot(3,4,11), imshow(timeAveragedEdgeField(:,:,3));
-    subplot(3,4,12), imshow(timeAveragedEdgeField(:,:,4));
+    if showOutput
+        subplot(3,4,1), imshow(corners(:,:,:,i,1)), title(sprintf('Frame %d', i));
+        subplot(3,4,2), imshow(corners(:,:,:,i,2));
+        subplot(3,4,3), imshow(corners(:,:,:,i,3));
+        subplot(3,4,4), imshow(corners(:,:,:,i,4));
+        subplot(3,4,5), imshow(currentEdgeField(:,:,1));
+        subplot(3,4,6), imshow(currentEdgeField(:,:,2));
+        subplot(3,4,7), imshow(currentEdgeField(:,:,3));
+        subplot(3,4,8), imshow(currentEdgeField(:,:,4));
+        subplot(3,4,9), imshow(timeAveragedEdgeField(:,:,1));
+        subplot(3,4,10), imshow(timeAveragedEdgeField(:,:,2));
+        subplot(3,4,11), imshow(timeAveragedEdgeField(:,:,3));
+        subplot(3,4,12), imshow(timeAveragedEdgeField(:,:,4));
+    end
 %     k = waitforbuttonpress;
 end
 disp('Status: Average Edge Fields calculated.');
@@ -54,11 +78,15 @@ binaryLogoMask = zeros(cornerHeight, cornerWidth, 4);
 minIntesity = min(timeAveragedEdgeField(:));
 maxIntesity = max(timeAveragedEdgeField(:));
 
-figure;
+if showOutput
+    figure;
+end
 for j = 1 : 4
     [ trinarisationImage(:,:,j), binaryLogoMask(:,:,j) ] = hysteresis3d(timeAveragedEdgeField(:,:,j), 0.2, 0.7, minIntesity, maxIntesity);
-    subplot(2,4,j), imshow(trinarisationImage(:,:,j));
-    subplot(2,4,j+4), imshow(binaryLogoMask(:,:,j));
+    if showOutput
+        subplot(2,4,j), imshow(trinarisationImage(:,:,j));
+        subplot(2,4,j+4), imshow(binaryLogoMask(:,:,j));
+    end
 end
 disp('Status: Prominent Edges Extracted.');
 
@@ -68,20 +96,24 @@ openedLogoMask = zeros(cornerHeight, cornerWidth, 4);
 
 disk5px = strel('disk',5);
 
-h = figure('Name','Disk 5px Morphological Operarions','NumberTitle','off');
+if showOutput
+    h = figure('Name','Disk 5px Morphological Operarions','NumberTitle','off');
+end
 for j = 1 : 4
     fprintf('Status: Processing Corner %d.\n', j);
-    ocrResults = ocr(corners(:,:,:,13,j));
-    recognizedText = ocrResults.Text;
-    fprintf('Status: Text in Corner %d: %s.\n', j, recognizedText);
+%     ocrResults = ocr(binaryLogoMask(:,:,j));
+%     recognizedText = ocrResults.Text;
+%     fprintf('Status: Text in Corner %d: %s.\n', j, recognizedText);
     closedLogoMask(:,:,j) = imclose(binaryLogoMask(:,:,j), disk5px);
     holeFilledLogoMask(:,:,j) = imfill(closedLogoMask(:,:,j),'holes');
     openedLogoMask(:,:,j) = imopen(holeFilledLogoMask(:,:,j), disk5px);
     
-    figure(h);
-    subplot(3,4,j), imshow(closedLogoMask(:,:,j)), title('Closed Logo Mask');
-    subplot(3,4,j+4), imshow(holeFilledLogoMask(:,:,j)), title('Hole Filled Logo Mask');
-    subplot(3,4,j+8), imshow(openedLogoMask(:,:,j)), title('Opened Logo Mask');
+    if showOutput
+        figure(h);
+        subplot(3,4,j), imshow(closedLogoMask(:,:,j)), title('Closed Logo Mask');
+        subplot(3,4,j+4), imshow(holeFilledLogoMask(:,:,j)), title('Hole Filled Logo Mask');
+        subplot(3,4,j+8), imshow(openedLogoMask(:,:,j)), title('Opened Logo Mask');
+    end
     
     CC = bwconncomp(openedLogoMask(:,:,j));
     stats = regionprops(CC, 'BoundingBox', 'Area');
@@ -106,8 +138,16 @@ for j = 1 : 4
 %             check if occurs in expected corner
             if expectedLogoCorners(mostOccuringLabel) == j
 %                 show the classified logo
-                figure('Name',sprintf('Corner %d - ConnComp %d classified as: %s', j, k, char(logoClassNames(mostOccuringLabel))),'NumberTitle','off');
-                imshow(imcrop(binaryLogoMask(:,:,j), stats(k).BoundingBox));
+                if showOutput
+                    figure('Name',sprintf('Corner %d - ConnComp %d classified as: %s', j, k, char(logoClassNames(mostOccuringLabel))),'NumberTitle','off');
+                    imshow(imcrop(binaryLogoMask(:,:,j), stats(k).BoundingBox));
+                end
+                if saveResults
+                    imwrite(imcrop(binaryLogoMask(:,:,j), stats(k).BoundingBox), fullfile(resultFolder, sprintf('Step7_Corner%d_%s.png', j, char(logoClassNames(mostOccuringLabel)))));
+                    fileID = fopen(resultFile,'at');
+                    fprintf(fileID, 'Detected Logo: %s, Corner: %d\n', char(logoClassNames(mostOccuringLabel)), j);
+                    fclose(fileID);
+                end
             else
                 disp('Logo does not occur in expected corner, so not considered.');
             end
@@ -117,4 +157,39 @@ for j = 1 : 4
     end
 end
 
+% Sport Recognition
+if sportRecognitionEnabled
+    topSum = sum(sum(binaryLogoMask(:,:,1)));
+    bottomSum = sum(sum(binaryLogoMask(:,:,3)));
+    threshold = 500;
+
+    if ( topSum > threshold ) || ( bottomSum > threshold )
+        if topSum > bottomSum
+            sportCategory = 'Football';
+        else
+            sportCategory = 'Cricket';
+        end
+    else
+        sportCategory = 'None';
+    end
+    fprintf('\nStatus: Sport Category: %s\n', sportCategory);
+end
+
 fprintf('\n%d frames processed in all.\n', numFrames);
+
+%% Save Results
+if saveResults
+    for i = 1 : 4
+        imwrite(timeAveragedEdgeField(:,:,i), fullfile(resultFolder, sprintf('Step1_Corner%d_timeAveragedEdgeField.png', i)));
+        imwrite(trinarisationImage(:,:,i)   , fullfile(resultFolder, sprintf('Step2_Corner%d_trinarisationImage.png', i)));
+        imwrite(binaryLogoMask(:,:,i)       , fullfile(resultFolder, sprintf('Step3_Corner%d_binaryLogoMask.png', i)));
+        imwrite(closedLogoMask(:,:,i)       , fullfile(resultFolder, sprintf('Step4_Corner%d_closedLogoMask.png', i)));
+        imwrite(holeFilledLogoMask(:,:,i)   , fullfile(resultFolder, sprintf('Step5_Corner%d_holeFilledLogoMask.png', i)));
+        imwrite(openedLogoMask(:,:,i)       , fullfile(resultFolder, sprintf('Step6_Corner%d_openedLogoMask.png', i)));
+    end
+    if sportRecognitionEnabled
+        fileID = fopen(resultFile,'at');
+        fprintf(fileID, 'SportCategory: %s\n', sportCategory);
+        fclose(fileID);
+    end
+end
