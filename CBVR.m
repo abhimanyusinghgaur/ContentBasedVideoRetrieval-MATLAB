@@ -1,14 +1,6 @@
 clc;
-% filename = 'DDSports/ddSports1-002.MP4'; %logo
-% filename = 'SonySix/sonySix2.mp4'; %logo, danger in sport
-filename = 'SonySix/sonySix2-005_2.mp4'; %keep0 both football
-% filename = 'SonySix/1 (1).mp4'; %keep both danger
-% filename = 'football.mp4'; %sport
-% filename = 'football/football-005.mp4';
-% filename = 'TenSports/Demo.mp4'; %keep0 both cricket
-% filename = 'TenSports/1-001.mp4'; %keep both
-% filename = 'TenSports/2-002.mp4';
-% filename = '2538-5_70133.avi';
+filename = 'SonySix/sonySix2-005_2.mp4';
+% filename = 'TenSports/Demo.mp4';
 
 %% Load SVM Model
 load('LogoModelRealDataWithOriginal.mat', 'classificationMdlSVM', 'logoClassNames', 'expectedLogoCorners');
@@ -22,8 +14,8 @@ else
 end
 
 %% Control Variables
-showOutput = false;
-sportRecognitionEnabled = false;
+showOutput = true;
+sportRecognitionEnabled = true;
 saveResults = true;
 
 %% Result saving functionality
@@ -68,7 +60,7 @@ for i = 1 : numFrames
         subplot(3,4,11), imshow(timeAveragedEdgeField(:,:,3));
         subplot(3,4,12), imshow(timeAveragedEdgeField(:,:,4));
     end
-%     k = waitforbuttonpress;
+    k = waitforbuttonpress;
 end
 disp('Status: Average Edge Fields calculated.');
 
@@ -159,19 +151,7 @@ end
 
 % Sport Recognition
 if sportRecognitionEnabled
-    topSum = sum(sum(binaryLogoMask(:,:,1)));
-    bottomSum = sum(sum(binaryLogoMask(:,:,3)));
-    threshold = 500;
-
-    if ( topSum > threshold ) || ( bottomSum > threshold )
-        if topSum > bottomSum
-            sportCategory = 'Football';
-        else
-            sportCategory = 'Cricket';
-        end
-    else
-        sportCategory = 'None';
-    end
+    sportCategory = getSport(corners(:,:,:,:,:), binaryLogoMask(:,:,:), filename);
     fprintf('\nStatus: Sport Category: %s\n', sportCategory);
 end
 
