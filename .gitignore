@@ -1,0 +1,16 @@
+*.avi
+*.mp4
+*.png
+*.jpg
+*.mat
+*.asv
+2538-5_70133_avi/*
+2538-5_70133_avi_results/*
+DDSports/*
+ESPN/*
+SonySix/*
+TenSports/*
+TestData/*
+football/*
+football_mp4_results/*
+Framework/*
