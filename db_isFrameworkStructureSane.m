@@ -23,7 +23,7 @@ function [ sanity ] = db_isFrameworkStructureSane()
     if exist(indexDir, 'dir') ~= 7
         sanity = false; return;
     end
-    if exist(videoDbIndexFile, 'file') ~= 2
+    if exist(videoDbRecordFile, 'file') ~= 2
         sanity = false; return;
     end
     if exist(videoDbCountFile, 'file') ~= 2

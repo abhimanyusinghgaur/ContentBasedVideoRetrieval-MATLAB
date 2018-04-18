@@ -76,7 +76,9 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
     indexMapLocations = zeros(1, indexMapLength, bytePositionIntType);
     for i = 1 : indexMapLength
         thisCategoryClasses = eval(strcat(indexCategories{i}, classVariableExtension));
-        if isempty(thisCategoryClasses)
+%       continue if there are no classes in this category, or if video is
+%       not tagged for this category
+        if isempty(thisCategoryClasses) || (indexMap(i)==0)
             continue;
         end
         thisCategoryIndexClassFile = strcat(indexDir, indexCategories{i}, pathSeparator, thisCategoryClasses{indexMap(i)}, indexFileExtension);
@@ -92,8 +94,8 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
         fwrite(indexClassFileID, newVideoName, indexClassIntType);
         fclose(indexClassFileID);
     end
-%   Make entry in videoDbIndexFile 
-    [ inserted, message ] = db_addVideoDbIndex( newVideoName, ext, indexMap, indexMapLocations );
+%   Make entry in videoDbRecordFile 
+    [ inserted, message ] = db_addVideoDbRecord( newVideoName, ext, indexMap, indexMapLocations );
     if ~inserted
         fclose(fileID);
         msg = [msg, message];

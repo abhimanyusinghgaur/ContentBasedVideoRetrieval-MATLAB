@@ -25,11 +25,12 @@ function [ ] = db_generateConfig()
     videoDbDir = strcat(dbFrameworkRootDir, 'videoDB', pathSeparator);
     tmpDir = strcat(dbFrameworkRootDir, 'tmp', pathSeparator);
     indexDir = strcat(dbFrameworkRootDir, 'indexes', pathSeparator);
-    videoDbIndexFile = strcat(dbFrameworkRootDir, 'dbRecords', indexFileExtension);
+    videoDbRecordFile = strcat(dbFrameworkRootDir, 'dbRecords', indexFileExtension);
     videoDbCountFile = strcat(dbFrameworkRootDir, 'dbRecordsCount', indexFileExtension);
 
 %%  Categories of indexing and Classes in each category
     indexCategories = {'tvChannel', 'sport', 'team', 'player'};
+    videoDbRecordByteSize = sizeof(videoNameIntType) + maxExtensionChars + length(indexCategories)*(sizeof(indexClassIntType) + sizeof(bytePositionIntType));
     classVariableExtension = 'Classes';
     % name class variables for an indexCategory as:
     % strcat(indexCategory{i}, classVariableExtension)

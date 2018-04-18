@@ -13,9 +13,9 @@ function [ ] = db_createFrameworkStructure()
     mkdir(videoDbDir);
     mkdir(tmpDir);
     mkdir(indexDir);
-%   create videoDbIndexFile and write header as 0 => no video has been
+%   create videoDbRecordFile and write header as 0 => no video has been
 %   deleted yet. Header tells the count of deleted videos in file.
-    fileID = fopen(videoDbIndexFile, 'w');  fwrite(fileID, 0, headerIntType); fclose(fileID);
+    fileID = fopen(videoDbRecordFile, 'w');  fwrite(fileID, 0, headerIntType); fclose(fileID);
 %   create videoDbCountFile and write count as 0 => no video inserted yet
     fileID = fopen(videoDbCountFile, 'w');  fwrite(fileID, 0, headerIntType); fclose(fileID);
 %   videos will be stored starting naming from 1.
