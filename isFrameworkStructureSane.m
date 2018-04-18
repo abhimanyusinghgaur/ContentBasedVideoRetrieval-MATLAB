@@ -11,6 +11,9 @@ function [ sanity ] = isFrameworkStructureSane()
 %   load metadata
     load(metadataFile);
     
+    if exist(dbFrameworkRootDir, 'dir') ~= 7
+        sanity = false; return;
+    end    
     if exist(videoDbDir, 'dir') ~= 7
         sanity = false; return;
     end

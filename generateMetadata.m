@@ -3,28 +3,29 @@ function [ ] = generateMetadata()
     clear;
 %%  Miscellaneous variables
     supportedVideoFormats = {'avi', 'mj2', 'mpg', 'wmv', 'asf', 'asx', 'mp4', 'm4v', 'mov'};
-    extensionSize = 'char';
+    maxExtensionChars = 3;
     pathSeparator = '/';
     indexFileExtension = '.dat';
 
-%%  DataSize used in index files to write data
-    headerIntSize = 'uint32';
-    videoNameIntSize = 'uint16';
-    indexClassIntSize = videoNameIntSize;
-    bytePositionIntSize = headerIntSize;
+%%  DataType used in index files to write data
+    headerIntType = 'uint32';
+    videoNameIntType = 'uint16';
+    extensionType = 'char*1';
+    indexClassIntType = videoNameIntType;
+    bytePositionIntType = headerIntType;
 %   avgVideoSize = 5Mb for 1min video in mp4 format
 %   maxIndexFileSize = 4Gb = (((2^32 byte positions in file)/1024 bytes per
 %   Kb)/1024 Kb per Mb)/1024 Mb per Gb
 %   maxRecordsInVideoDbIndexFile = 186737708 = (2^32)/23 bytes per record
 %   maxRecordsInClassIndexFiles = 1073741824 = (2^32)/4 bytes per record
 
-%%  Frameowrk directories and files
-    rootDir = strcat('Framework', pathSeparator);
-    videoDbDir = strcat(rootDir, 'videoDB', pathSeparator);
-    tmpDir = strcat(rootDir, 'tmp', pathSeparator);
-    indexDir = strcat(rootDir, 'indexes', pathSeparator);
-    videoDbIndexFile = strcat(rootDir, 'db', indexFileExtension);
-    videoDbCountFile = strcat(rootDir, 'numRecords', indexFileExtension);
+%%  DB Frameowrk directories and files
+    dbFrameworkRootDir = strcat('dbFramework', pathSeparator);
+    videoDbDir = strcat(dbFrameworkRootDir, 'videoDB', pathSeparator);
+    tmpDir = strcat(dbFrameworkRootDir, 'tmp', pathSeparator);
+    indexDir = strcat(dbFrameworkRootDir, 'indexes', pathSeparator);
+    videoDbIndexFile = strcat(dbFrameworkRootDir, 'dbRecords', indexFileExtension);
+    videoDbCountFile = strcat(dbFrameworkRootDir, 'dbRecordsCount', indexFileExtension);
 
 %%  Categories of indexing and Classes in each category
     indexCategories = {'tvChannel', 'sport', 'team', 'player'};

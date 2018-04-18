@@ -4,6 +4,11 @@
 *.jpg
 *.mat
 *.asv
+path
+getCandidateFrames.m
+getSignature.m
+keyf.m
+text_ocr_test.m
 2538-5_70133_avi/*
 2538-5_70133_avi_results/*
 DDSports/*
@@ -13,4 +18,4 @@ TenSports/*
 TestData/*
 football/*
 football_mp4_results/*
-Framework/*
+dbFramework/*
