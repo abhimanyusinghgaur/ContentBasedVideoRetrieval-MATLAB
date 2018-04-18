@@ -1,6 +1,7 @@
-function [ ] = generateMetadata()
+function [ ] = db_generateConfig()
     % clear all workspace variables
     clear;
+    dbConfigFilename = 'dbConfig.mat';
 %%  Miscellaneous variables
     supportedVideoFormats = {'avi', 'mj2', 'mpg', 'wmv', 'asf', 'asx', 'mp4', 'm4v', 'mov'};
     maxExtensionChars = 3;
@@ -47,5 +48,5 @@ function [ ] = generateMetadata()
     playerClasses       = {};
 
 %%  Save above variables
-    save('metadata.mat');
+    save(dbConfigFilename);
 end

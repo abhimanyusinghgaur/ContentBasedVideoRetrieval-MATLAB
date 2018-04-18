@@ -1,11 +1,11 @@
-function [ added, msg ] = addVideoDbIndex( videoName, extension, indexMap, indexMapLocations )
+function [ added, msg ] = db_addVideoDbIndex( videoName, extension, indexMap, indexMapLocations )
 %ADDVIDEODBINDEX Summary of this function goes here
 %   Detailed explanation goes here
     added = true;
     msg = 'addVideoDbIndex: ';
 
-%%  Load metadata
-    load('metadata.mat');
+%%  Load dbConfig
+    load('dbConfig.mat');
 
 %%  Input Formatting
 %   Pad extension with 0, if length is less than maxExtensionChars

@@ -1,4 +1,4 @@
-function [ inserted, msg ] = insertVideo( videoURI, indexMap )
+function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
 %INSERTVIDEO Inserts given video into DB Framework
 %   Detailed explanation goes here
     inserted = true;
@@ -7,15 +7,15 @@ function [ inserted, msg ] = insertVideo( videoURI, indexMap )
 %%  Check DB Framework Sanity
 %   DANGER: if any db file/folder is missing, it will reset whole db.
 %   Make some kind of initDB() which runs only once.
-    if ~isFrameworkStructureSane()
-        createFrameworkStructure();
-        if ~isFrameworkStructureSane()
+    if ~db_isFrameworkStructureSane()
+        db_createFrameworkStructure();
+        if ~db_isFrameworkStructureSane()
             inserted = false;
             msg = [msg, 'Error in createFrameworkStructure().'];
             return;
         end
     end
-    load('metadata.mat');
+    load('dbConfig.mat');
 
 %%  Input Validation
 %   Check if file extension is supported
@@ -93,7 +93,7 @@ function [ inserted, msg ] = insertVideo( videoURI, indexMap )
         fclose(indexClassFileID);
     end
 %   Make entry in videoDbIndexFile 
-    [ inserted, message ] = addVideoDbIndex( newVideoName, ext, indexMap, indexMapLocations );
+    [ inserted, message ] = db_addVideoDbIndex( newVideoName, ext, indexMap, indexMapLocations );
     if ~inserted
         fclose(fileID);
         msg = [msg, message];

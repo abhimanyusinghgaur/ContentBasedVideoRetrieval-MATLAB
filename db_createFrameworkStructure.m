@@ -1,13 +1,13 @@
-function [ ] = createFrameworkStructure()
+function [ ] = db_createFrameworkStructure()
 %createFrameworkStructure Creates the basic framework structure
 %   Detailed explanation goes here
-    metadataFile = 'metadata.mat';
+    dbConfigFile = 'dbConfig.mat';
     
-    if exist(metadataFile, 'file') ~= 2
-        generateMetadata();
+    if exist(dbConfigFile, 'file') ~= 2
+        db_generateConfig();
     end
-%   load metadata
-    load(metadataFile);
+%   load dbConfig
+    load(dbConfigFile);
     
     mkdir(dbFrameworkRootDir);
     mkdir(videoDbDir);

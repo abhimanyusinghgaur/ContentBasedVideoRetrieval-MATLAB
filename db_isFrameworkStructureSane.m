@@ -1,15 +1,15 @@
-function [ sanity ] = isFrameworkStructureSane()
+function [ sanity ] = db_isFrameworkStructureSane()
 %isFrameworkStructureSane Checks the sanity of basic framework structure
 %   Detailed explanation goes here
     sanity = true;
 
-    metadataFile = 'metadata.mat';
+    dbConfigFile = 'dbConfig.mat';
 
-    if exist(metadataFile, 'file') ~= 2
-        generateMetadata();
+    if exist(dbConfigFile, 'file') ~= 2
+        db_generateConfig();
     end
-%   load metadata
-    load(metadataFile);
+%   load dbConfig
+    load(dbConfigFile);
     
     if exist(dbFrameworkRootDir, 'dir') ~= 7
         sanity = false; return;
