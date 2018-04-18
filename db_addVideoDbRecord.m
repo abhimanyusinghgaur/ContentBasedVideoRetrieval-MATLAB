@@ -20,17 +20,17 @@ function [ added, msg ] = db_addVideoDbRecord( videoName, extension, indexMap, i
     end
     currentBytePos = ftell(fileID);
     if currentBytePos == -1
-        fclose(fileID);
         added = false;
         msg = [msg, videoDbRecordFile, ': ', ferror(fileID)];
+        fclose(fileID);
         return;
     end
     insertBytePos = sizeof(headerIntType) + (videoName-1)*(videoDbRecordByteSize);
     offset = insertBytePos - currentBytePos;
     if fseek(fileID, offset, 'cof') == -1
-        fclose(fileID);
         added = false;
         msg = [msg, videoDbRecordFile, ': ', ferror(fileID)];
+        fclose(fileID);
         return;
     end
 

@@ -56,9 +56,9 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
         return;
     end
     if fseek(fileID, 0, 'bof') == -1
-        fclose(fileID);
         inserted = false;
         msg = [msg, ferror(fileID)];
+        fclose(fileID);
         return;
     end
 %   Generate new name for video a/c to DB rules
@@ -85,10 +85,10 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
         indexClassFileID = fopen(thisCategoryIndexClassFile, 'a');
         indexMapLocations(i) = ftell(indexClassFileID);
         if (indexClassFileID == -1) || (indexMapLocations(i) == -1)
-            fclose(indexClassFileID);
-            fclose(fileID);
             inserted = false;
             msg = [msg, thisCategoryIndexClassFile, ': ', ferror(indexClassFileID)];
+            fclose(indexClassFileID);
+            fclose(fileID);
             return;
         end
         fwrite(indexClassFileID, newVideoName, indexClassIntType);
@@ -104,9 +104,9 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
 %   Update count in videoDbCountFile
 %   updated only if all above operations succeed, to ensure DB consistency
     if fseek(fileID, 0, 'bof') == -1
-        fclose(fileID);
         inserted = false;
         msg = [msg, ferror(fileID)];
+        fclose(fileID);
         return;
     end
     fwrite(fileID, newVideoName, headerIntType);
