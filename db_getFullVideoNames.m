@@ -1,6 +1,7 @@
 function [ fullVideoNames, success, msg  ] = db_getFullVideoNames( videoNames )
 %READVIDEODBINDEXFILE Given videoNames, returns full name for the videos
-%   Assumes none of the given videoNames is 0, or greater than videoDbCount
+%   Assumes none of the given videoNames is greater than videoDbCount.
+    videoNames = videoNames(videoNames>0);
     len = length(videoNames);
     fullVideoNames = cell(1, len);
     success = true;
@@ -8,6 +9,12 @@ function [ fullVideoNames, success, msg  ] = db_getFullVideoNames( videoNames )
 
 %%  Load dbConfig
     load('dbConfig.mat');
+
+%% Input Validation
+    if isempty(videoNames)
+        msg = [msg, 'Why was I called?'];
+        return;
+    end
 
 %%  Open videoDbRecordFile
     fileID = fopen(videoDbRecordFile, 'r');
@@ -34,4 +41,3 @@ function [ fullVideoNames, success, msg  ] = db_getFullVideoNames( videoNames )
     fclose(fileID);
 
 end
-
