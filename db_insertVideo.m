@@ -1,6 +1,8 @@
 function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
 %INSERTVIDEO Inserts given video into DB Framework
 %   Detailed explanation goes here
+
+%%  Set initial output vars
     inserted = true;
     msg = 'insertVideo: ';
 
@@ -15,6 +17,8 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
             return;
         end
     end
+
+%%  Load dbConfig
     load('dbConfig.mat');
 
 %%  Input Validation

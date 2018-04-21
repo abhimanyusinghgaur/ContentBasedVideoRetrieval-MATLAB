@@ -1,6 +1,9 @@
 function [ added, msg ] = db_addVideoDbRecord( videoName, extension, indexMap, indexMapLocations )
 %ADDVIDEODBINDEX Summary of this function goes here
-%   Detailed explanation goes here
+%   Assumes inputs are correct, so not performing input validation.
+%   Will not be used by any function other than db_insertVideo().
+
+%%  Set initial output vars
     added = true;
     msg = 'addVideoDbRecord: ';
 

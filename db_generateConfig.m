@@ -1,7 +1,9 @@
 function [ ] = db_generateConfig()
-    % clear all workspace variables
-    clear;
+%DB_GENERATECONFIG Generates a configuration file for DB Framework
+
+    clear; % clear all workspace variables
     dbConfigFilename = 'dbConfig.mat';
+
 %%  Miscellaneous variables
     supportedVideoFormats = {'avi', 'mj2', 'mpg', 'wmv', 'asf', 'asx', 'mp4', 'm4v', 'mov'};
     maxExtensionChars = 3;
@@ -48,6 +50,7 @@ function [ ] = db_generateConfig()
 
     playerClasses       = {};
 
-%%  Save above variables
+%%  Save above variables in configuration file
     save(dbConfigFilename);
+
 end

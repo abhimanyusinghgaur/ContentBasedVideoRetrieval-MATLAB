@@ -1,14 +1,16 @@
 function [ ] = db_createFrameworkStructure()
 %createFrameworkStructure Creates the basic framework structure
 %   Detailed explanation goes here
+
+%%  Load dbConfig
     dbConfigFile = 'dbConfig.mat';
     
     if exist(dbConfigFile, 'file') ~= 2
         db_generateConfig();
     end
-%   load dbConfig
     load(dbConfigFile);
-    
+
+%%  Start Creating Framework Structure
     mkdir(dbFrameworkRootDir);
     mkdir(videoDbDir);
     mkdir(tmpDir);

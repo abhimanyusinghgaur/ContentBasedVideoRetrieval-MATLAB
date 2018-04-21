@@ -4,9 +4,13 @@ function [ videoNames, found, msg ] = db_findBestMatchVideos( indexMap, numVideo
 %   If there are no videos with exact tags as specified by indexMap,
 %   nothing 'may' be returned.
 %   Give 0 in indexMap, to ignore that category in search.
+
+%%  Load dbConfig
     load('dbConfig.mat');
+
+%%  Set initial output vars
     videoNames = zeros(1, numVideos, videoNameIntType);
-    found = 0;
+    found = 0; % count of total matching videos found by this algorithm
     msg = 'db_findBestMatchVideos: ';
 
 %%  Input Validation
@@ -144,15 +148,17 @@ function [ videoNames, found, msg ] = db_findBestMatchVideos( indexMap, numVideo
         fclose(fileIDs(i));
     end
 
-end % END of FUNCTION
+end % END of FUNCTION db_findBestMatchVideos
 
 
+%%  START of FUNCTION readBufferFromFile
 function [fileVideoNamesBuffer] = readBufferFromFile(fileID, bufferLength, valueType)
 %READBUFFERFROMFILE Reads a buffer of length bufferLength from given file.
 %   Returns the read buffer.
 %   As deletedVideoName=0, so we don't let such videos come into buffer.
 %   If ever feof is encountered, we use 0 as values to fill remaining
 %   buffer length.
+
     fileVideoNamesBuffer = fread(fileID, bufferLength, valueType);
     fileVideoNamesBuffer = fileVideoNamesBuffer(fileVideoNamesBuffer~=0);
     while (length(fileVideoNamesBuffer) < bufferLength) && ~feof(fileID)
@@ -161,4 +167,5 @@ function [fileVideoNamesBuffer] = readBufferFromFile(fileID, bufferLength, value
         fileVideoNamesBuffer = [fileVideoNamesBuffer; temp1];
     end
     fileVideoNamesBuffer = [fileVideoNamesBuffer; zeros(bufferLength-length(fileVideoNamesBuffer), 1, valueType)];
-end
+
+end % END of FUNCTION readBufferFromFile

@@ -1,16 +1,19 @@
 function [ sanity ] = db_isFrameworkStructureSane()
 %isFrameworkStructureSane Checks the sanity of basic framework structure
 %   Detailed explanation goes here
+
+%%  Set initial output vars
     sanity = true;
 
+%%  Load dbConfig
     dbConfigFile = 'dbConfig.mat';
 
     if exist(dbConfigFile, 'file') ~= 2
         db_generateConfig();
     end
-%   load dbConfig
     load(dbConfigFile);
-    
+
+%%  Start sanity check
     if exist(dbFrameworkRootDir, 'dir') ~= 7
         sanity = false; return;
     end    
@@ -49,4 +52,3 @@ function [ sanity ] = db_isFrameworkStructureSane()
     end
 
 end
-

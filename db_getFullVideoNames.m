@@ -1,8 +1,12 @@
 function [ fullVideoNames, success, msg  ] = db_getFullVideoNames( videoNames )
 %READVIDEODBINDEXFILE Given videoNames, returns full name for the videos
 %   Assumes none of the given videoNames is greater than videoDbCount.
+
+%%  Basic required input sanitation
     videoNames = videoNames(videoNames>0);
     len = length(videoNames);
+
+%%  Set initial output vars
     fullVideoNames = cell(1, len);
     success = true;
     msg = 'getFullVideoNames: ';
