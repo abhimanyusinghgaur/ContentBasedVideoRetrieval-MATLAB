@@ -1,9 +1,12 @@
-function [ videoNames, found, msg ] = db_findBestMatchVideos( indexMap, numVideos )
+function [ videoNames, found, msg ] = db_findBestMatchVideos( indexMap, numVideos, startCursors )
 %DB_FINDBESTMATCHVIDEOS Finds best matching videos to indexMap in DB
 %   Returns max 'numVideos' strict best matches to indexMap.
 %   If there are no videos with exact tags as specified by indexMap,
 %   nothing 'may' be returned.
-%   Give 0 in indexMap, to ignore that category in search.
+%   startCursors is OPTIONAL argument.
+%   Give 0 in indexMap, or -1 in startCursors to ignore that category in search.
+%   Give 0 in startCursors to start search from beginning of that file.
+%   Yet To Implement:   Mechanism to return cursors
 
 %%  Load dbConfig
     load('dbConfig.mat');
@@ -13,12 +16,33 @@ function [ videoNames, found, msg ] = db_findBestMatchVideos( indexMap, numVideo
     found = 0; % count of total matching videos found by this algorithm
     msg = 'db_findBestMatchVideos: ';
 
-%%  Input Validation
+%%  Input Validation and Sanitation
 %   Check if index map is good
     indexMapLength = length(indexMap);
     if indexMapLength ~= length(indexCategories)
         msg = [msg, 'Invalid length of indexMap.'];
         return;
+    end
+%   Sanitize indexMap from lower bound
+    indexMap(indexMap < 0) = 0;
+    if ~any(indexMap)
+        return;
+    end
+
+%   Check if startCursors are good
+    if exist('startCursors', 'var') ~= 1
+        startCursors = zeros(1, indexMapLength, bytePositionIntType);
+    elseif length(startCursors) ~= indexMapLength
+        msg = [msg, 'Invalid length of startCursors.'];
+        return;
+    end
+%   Sanitize startCursors from lower bound
+    for i = 1 : indexMapLength
+        if startCursors(i) < -1
+            startCursors(i) = -1;
+        elseif (startCursors(i) >= 0) && (startCursors(i) < sizeof(headerIntType))
+                startCursors(i) = sizeof(headerIntType);
+        end
     end
 
 %   Check numVideos
@@ -26,12 +50,18 @@ function [ videoNames, found, msg ] = db_findBestMatchVideos( indexMap, numVideo
         return;
     end
 
+%%  Check DB Framework Sanity
+    if ~db_isFrameworkStructureSane()
+            msg = [msg, 'DB Framework is not sane.'];
+            return;
+    end
+
 %%  Find indexClassFiles and their sizes
     indexClassFiles = cell(1, indexMapLength);
     indexClassFileSizes = zeros(1, indexMapLength);
     for i = 1 : indexMapLength
         thisCategoryClasses = eval(strcat(indexCategories{i}, classVariableExtension));
-        if isempty(thisCategoryClasses) || (indexMap(i)==0)
+        if (indexMap(i)==0) || (indexMap(i)>length(thisCategoryClasses))
             continue;
         end
         indexClassFiles{i} = strcat(indexDir, indexCategories{i}, pathSeparator, thisCategoryClasses{indexMap(i)}, indexFileExtension);
@@ -59,7 +89,7 @@ function [ videoNames, found, msg ] = db_findBestMatchVideos( indexMap, numVideo
                 continue;
             end
 %           if unable to seek in file, pose as if it was never opened
-            if fseek(fileIDs(i), sizeof(headerIntType), 'bof') == -1
+            if fseek(fileIDs(i), startCursors(mappingVector(i)), 'bof') == -1
                 msg = [msg, indexClassFiles{mappingVector(i)}, ': ', ferror(fileIDs(i)), '. '];
                 fclose(fileIDs(i));
                 fileIDs(i) = -1;
@@ -67,7 +97,8 @@ function [ videoNames, found, msg ] = db_findBestMatchVideos( indexMap, numVideo
             end
 %             fprintf('fileIDs(%d): %d. Position: %d. Size: %d. EOF: %d\n', i, fileIDs(i), ftell(fileIDs(i)), indexClassFileSizes(i), feof(fileIDs(i)));
 %           if file contains only header, pose as if it was never opened
-            if ftell(fileIDs(i)) == indexClassFileSizes(i)
+            currBytePos = ftell(fileIDs(i));
+            if (currBytePos == -1) || (currBytePos == indexClassFileSizes(i))
                 msg = [msg, indexClassFiles{mappingVector(i)}, ': No videos indexed for this class. '];
                 fclose(fileIDs(i));
                 fileIDs(i) = -1;

@@ -25,7 +25,6 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
 %   Check if file extension is supported
     [pathstr,name,ext] = fileparts(videoURI);
     ext = strrep(ext, '.', '');
-    disp(ext);
     if ~any(strcmp(supportedVideoFormats, ext))
         inserted = false;
         msg = [msg, videoURI, ': ', 'Unsupported File format.'];
@@ -51,7 +50,9 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
 
 %%  Atomic Section: Adds/Updates records in DB files.
 %   TODO: Find a way to actually make it atomic, atomicity is not possible
-%   in MATLAB
+%   in MATLAB. If not made atomic, there is a possibility that  some index
+%   files may contain repeated/non-required videoNames, which may result in
+%   wrong output by retrieval algorithms.
 %   TODO: Check if fopen puts a mutex/system_wide lock on file or not?
     fileID = fopen(videoDbCountFile, 'r+');
     if fileID == -1
@@ -65,8 +66,15 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
         fclose(fileID);
         return;
     end
-%   Generate new name for video a/c to DB rules
+%   Read currentVideoCount from videoDbCountFile and reset write pointer
     currentVideoCount = fread(fileID, 1, headerIntType);
+    if fseek(fileID, 0, 'bof') == -1
+        inserted = false;
+        msg = [msg, ferror(fileID)];
+        fclose(fileID);
+        return;
+    end
+%   Generate new name for video a/c to DB rules
     newVideoName = currentVideoCount + 1;
 %   Move video to videoDbDir
     newVideoURI = sprintf('%s%d.%s', videoDbDir, newVideoName, ext);
@@ -77,6 +85,9 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
         return;
     end
 %   Make entries for indexMap in indexDir files
+%   Use log file mechanism to make this block fully atomic
+%   First insert into log file, then into index. Delete log file only after
+%   writing new count to videoDbCountFile
     indexMapLocations = zeros(1, indexMapLength, bytePositionIntType);
     for i = 1 : indexMapLength
         thisCategoryClasses = eval(strcat(indexCategories{i}, classVariableExtension));
@@ -107,12 +118,6 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
     end
 %   Update count in videoDbCountFile
 %   updated only if all above operations succeed, to ensure DB consistency
-    if fseek(fileID, 0, 'bof') == -1
-        inserted = false;
-        msg = [msg, ferror(fileID)];
-        fclose(fileID);
-        return;
-    end
     fwrite(fileID, newVideoName, headerIntType);
     fclose(fileID);
 

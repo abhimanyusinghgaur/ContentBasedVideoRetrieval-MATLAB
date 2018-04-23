@@ -1,6 +1,7 @@
 function [ fullVideoNames, success, msg  ] = db_getFullVideoNames( videoNames )
 %READVIDEODBINDEXFILE Given videoNames, returns full name for the videos
 %   Assumes none of the given videoNames is greater than videoDbCount.
+%   videoNames is a horizontal vector.
 
 %%  Basic required input sanitation
     videoNames = videoNames(videoNames>0);
