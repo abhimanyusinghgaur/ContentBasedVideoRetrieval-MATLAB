@@ -22,7 +22,7 @@ function varargout = ui_search(varargin)
 
 % Edit the above text to modify the response to help ui_search
 
-% Last Modified by GUIDE v2.5 24-Apr-2018 03:59:28
+% Last Modified by GUIDE v2.5 24-Apr-2018 15:59:47
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -316,11 +316,12 @@ for i = 1 : length(supportedVideoFormats)
 end
 [filename, pathstr] = uigetfile(formatspec, 'Select the video to search');
 if ischar(filename)
+    videoURI = [pathstr, filename];
+    set(handles.videoSearchButtonURI, 'String', videoURI);
     h = msgbox('Searching Video...', 'Please Wait...');
     % set pointer to indicate processing
     set(handles.figure1, 'pointer', 'watch');
     drawnow;
-    videoURI = [pathstr, filename];
     indexMap = tag_getAllTags(videoURI);
     [videoNames, found, msg] = db_findBestMatchVideos(indexMap, 10);
     msg = strsplit(msg, ':');

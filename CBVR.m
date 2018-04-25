@@ -151,7 +151,7 @@ end
 
 % Sport Recognition
 if sportRecognitionEnabled
-    sportCategory = getSport(corners(:,:,:,:,:), binaryLogoMask(:,:,:), filename);
+    sportCategory = getSport(binaryLogoMask(:,:,:));
     fprintf('\nStatus: Sport Category: %s\n', sportCategory);
 end
 

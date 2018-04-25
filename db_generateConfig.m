@@ -51,14 +51,14 @@ function [ ] = db_generateConfig()
     teamClasses         = {'INDIA', 'PAKISTAN', 'SRI LANKA', 'SOUTH AFRICA', 'ENGLAND', 'FC BARCELONA', 'REAL MADRID', 'ATM FA'};
     % classLabels       = [    1  ,      2    ,       3    ,       4       ,      5   ,         6     ,        7     ,     8   ];
 
-    playerClasses       = {'SACHIN TENDULKAR', 'MS DHONI', 'VIRAT KOHLI', 'DINESH KARTHIK', 'JEHAN MUBARAK', 'RANGANA HERATH', 'RONALDO', 'MESSI', 'CHETESHWAR PUJARA', 'AMIT MISHRA'};
-    % classLabels       = [         1        ,      2    ,       3      ,         4       ,        5       ,         6       ,     7    ,    8   ,            9       ,       10     ];
+    playerClasses       = {'SACHIN TENDULKAR', 'MS DHONI', 'VIRAT KOHLI', 'DINESH KARTHIK', 'JEHAN MUBARAK', 'RANGANA HERATH', 'RONALDO', 'MESSI', 'CHETESHWAR PUJARA', 'AMIT MISHRA', 'PRADEEP', 'MOSEHLE', 'PARNELL', 'DICKWELLA', 'PHEHLUKWAYO'};
+    % classLabels       = [         1        ,      2    ,       3      ,         4       ,        5       ,         6       ,     7    ,    8   ,            9       ,       10     ,     11   ,    12    ,    13    ,      14    ,       15     ];
 
     % name maps as strcat(indexCategory{i}, 'Text_', indexCategory{j}, '_Map')
     keyText_sport_Map   = containers.Map('KeyType', 'char', 'ValueType', indexClassIntType);
     keyText_sport_Map('OVERS') = 1; keyText_sport_Map('INNS') = 1;  keyText_sport_Map('RR')  = 1;
     keyText_sport_Map('FIFTY') = 1; keyText_sport_Map('TEST') = 1;  keyText_sport_Map('MPH') = 1;
-    keyText_sport_Map('KPH')   = 1;
+    keyText_sport_Map('SPEED') = 1; keyText_sport_Map('KPH')  = 1;
     
     teamText_sport_Map  = containers.Map('KeyType', 'char', 'ValueType', 'any');
     teamText_sport_Map('IND') = [1]; teamText_sport_Map('PAK') = [1]; teamText_sport_Map('SL')  = [1];
@@ -80,6 +80,11 @@ function [ ] = db_generateConfig()
     playerText_sport_Map('CPUJARA')    = 1;  playerText_sport_Map('PUJARA')    = 1;   playerText_sport_Map('CHETESHWARPUJARA')= 1;
     playerText_sport_Map('AMISHRA')    = 1;  playerText_sport_Map('MISHRA')    = 1;   playerText_sport_Map('AMITMISHRA')      = 1;
     playerText_sport_Map('RONALDO')    = 2;  playerText_sport_Map('MESSI')     = 2;
+    playerText_sport_Map('PRADEEP')    = 1;
+    playerText_sport_Map('MOSEHLE')    = 1;
+    playerText_sport_Map('PARNELL')    = 1;
+    playerText_sport_Map('DICKWELLA')  = 1;
+    playerText_sport_Map('PHEHLUKWAYO')= 1;
     
     playerText_team_Map = containers.Map('KeyType', 'char', 'ValueType', indexClassIntType);
     playerText_team_Map('STENDULKAR') = 1;  playerText_team_Map('TENDULKAR') = 1;   playerText_team_Map('SACHINTENDULKAR') = 1;
@@ -91,6 +96,11 @@ function [ ] = db_generateConfig()
     playerText_team_Map('JMUBARAK')   = 3;  playerText_team_Map('MUBARAK')   = 3;   playerText_team_Map('JEHANMUBARAK')    = 3;
     playerText_team_Map('RHERATH')    = 3;  playerText_team_Map('HERATH')    = 3;   playerText_team_Map('RANGANAHERATH')   = 3;
     playerText_team_Map('RONALDO')    = 7;  playerText_team_Map('MESSI')     = 6;
+    playerText_team_Map('PRADEEP')    = 3;
+    playerText_team_Map('DICKWELLA')  = 3;
+    playerText_team_Map('MOSEHLE')    = 4;
+    playerText_team_Map('PARNELL')    = 4;
+    playerText_team_Map('PHEHLUKWAYO')= 4;
     
     playerText_player_Map = containers.Map('KeyType', 'char', 'ValueType', indexClassIntType);
     playerText_player_Map('STENDULKAR') = 1;  playerText_player_Map('TENDULKAR') = 1;   playerText_player_Map('SACHINTENDULKAR') = 1;
@@ -102,6 +112,11 @@ function [ ] = db_generateConfig()
     playerText_player_Map('RONALDO')    = 7;  playerText_player_Map('MESSI')     = 8;
     playerText_player_Map('CPUJARA')    = 9;  playerText_player_Map('PUJARA')    = 9;   playerText_player_Map('CHETESHWARPUJARA')= 9;
     playerText_player_Map('AMISHRA')    = 10; playerText_player_Map('MISHRA')    = 10;  playerText_player_Map('AMITMISHRA')      = 10;
+    playerText_player_Map('PRADEEP')    = 11;
+    playerText_player_Map('MOSEHLE')    = 12;
+    playerText_player_Map('PARNELL')    = 13;
+    playerText_player_Map('DICKWELLA')  = 14;
+    playerText_player_Map('PHEHLUKWAYO')= 15;
     
     queryText_indexCategory_Map = containers.Map('KeyType', 'char', 'ValueType', indexClassIntType);
     queryText_indexCategory_Map = [queryText_indexCategory_Map; containers.Map([tvChannelClasses, strrep(tvChannelClasses, ' ', '')], ones(1, 2*length(tvChannelClasses), indexClassIntType))];
