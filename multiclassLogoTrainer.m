@@ -1,16 +1,26 @@
+% The directory where all the TV channel logos have been stored.
+% Create sub-directories within this directory to store logo for each
+% distinct logo class. Name sub-directories as 1, 2, 3, 4, ...
 allLogoDir = 'logos';
-logoClasses = 6;
+% This is the file where the generated SVM model will be saved.
+svmModelFileURI = 'LogoModelRealDataWithOriginal.mat';
 
-logoClassNames      = {'DD Sports', 'ESPN', 'Sony Six Old', 'Star Sports New', 'Ten Sports', 'SONY LIV'};
-% classLabels       = [      1    ,    2  ,        3      ,          4       ,       5     ,     6     ];
-expectedLogoCorners = [      2,        2,          2,                2,              2     ,     2     ];
+%%  Load variables from dbConfig
+dbConfigFile = db_getDbConfigFileURI();
+if exist(dbConfigFile, 'file') ~= 2
+    db_generateConfig();
+end
+load(dbConfigFile, 'tvChannelClasses', 'expectedLogoCorners');
 
+%%  Set initial variables
 totalObservations = getTotalPNGs(allLogoDir);
 featureVectorSize = 75;
 trainingData = zeros(totalObservations, featureVectorSize);
 trainingLabels = zeros(totalObservations, 1);
 
+%%  Extract features from logo files for each logo class
 k = 1;
+logoClasses = length(tvChannelClasses);
 for i = 1 : logoClasses
     thisClassLogoFiles = dir(sprintf('%s/%d/*.png', allLogoDir, i));
     numFiles = length(thisClassLogoFiles);
@@ -24,17 +34,9 @@ for i = 1 : logoClasses
     end
 end
 
+%%  Train SVM model
 classificationMdlSVM = fitcecoc(trainingData, trainingLabels);
-% saveCompactModel(Mdl, 'LogoModelECOC');
-save('6TVChannels.mat', 'classificationMdlSVM', 'logoClassNames', 'expectedLogoCorners');
 
-% img = imread('Sony_SIX_old.svg.png');
-% getGridDescriptors(img);
-% img = imread('DD_Sports.png');
-% getGridDescriptors(img);
-% img = imread('espn-red_50.png');
-% getGridDescriptors(img);
-% img = imread('STAR_Sports_Logo_New.jpg');
-% getGridDescriptors(img);
-% img = imread('Ten_Sports_logo.png');
-% getGridDescriptors(img);
+%%  Save the SVM model with related variables
+% saveCompactModel(Mdl, 'LogoModelECOC');
+save(svmModelFileURI, 'classificationMdlSVM', 'tvChannelClasses', 'expectedLogoCorners');

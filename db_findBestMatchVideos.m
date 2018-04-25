@@ -9,7 +9,7 @@ function [ videoNames, found, msg ] = db_findBestMatchVideos( indexMap, numVideo
 %   Yet To Implement:   Mechanism to return cursors
 
 %%  Load dbConfig
-    load('dbConfig.mat');
+    load(db_getDbConfigFileURI());
 
 %%  Set initial output vars
     videoNames = zeros(1, numVideos, videoNameIntType);

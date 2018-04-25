@@ -1,8 +1,11 @@
 function [ ] = db_generateConfig()
 %DB_GENERATECONFIG Generates a configuration file for DB Framework
+%   Updating this file is DANGEROUS. This file is very important to the
+%   working of the whole CBVR Framework. Only update if you understand the
+%   whole project fully.
+%   Updating wrong variables may result in database reset.
 
     clear; % clear all workspace variables
-    dbConfigFilename = 'dbConfig.mat';
 
 %%  Miscellaneous variables
     supportedVideoFormats = {'avi', 'mj2', 'mpg', 'wmv', 'asf', 'asx', 'mp4', 'm4v', 'mov'};
@@ -40,13 +43,13 @@ function [ ] = db_generateConfig()
     % strcat(indexCategory{i}, classVariableExtension)
     % Eg: sportClasses, teamClasses as written below
 
-    % Remove spaces from class names before indexing next time
+    % Always write class names in UPPERCASE.
     tvChannelClasses    = {'DD SPORTS', 'ESPN', 'SONY SIX OLD', 'STAR SPORTS NEW', 'TEN SPORTS'};
     % classLabels       = [      1    ,    2  ,        3      ,          4       ,       5     ];
     expectedLogoCorners = [      2,        2,          2,                2,              2     ];
 
-    sportClasses        = {'CRICKET', 'FOOTBALL'};
-    % classLabels       = [      1  ,      2    ];
+    sportClasses        = {'CRICKET', 'FOOTBALL', 'TENNIS', 'BASKETBALL'};
+    % classLabels       = [      1  ,      2    ,    3    ,      4      ];
 
     teamClasses         = {'INDIA', 'PAKISTAN', 'SRI LANKA', 'SOUTH AFRICA', 'ENGLAND', 'FC BARCELONA', 'REAL MADRID', 'ATM FA'};
     % classLabels       = [    1  ,      2    ,       3    ,       4       ,      5   ,         6     ,        7     ,     8   ];
@@ -54,6 +57,7 @@ function [ ] = db_generateConfig()
     playerClasses       = {'SACHIN TENDULKAR', 'MS DHONI', 'VIRAT KOHLI', 'DINESH KARTHIK', 'JEHAN MUBARAK', 'RANGANA HERATH', 'RONALDO', 'MESSI', 'CHETESHWAR PUJARA', 'AMIT MISHRA', 'PRADEEP', 'MOSEHLE', 'PARNELL', 'DICKWELLA', 'PHEHLUKWAYO'};
     % classLabels       = [         1        ,      2    ,       3      ,         4       ,        5       ,         6       ,     7    ,    8   ,            9       ,       10     ,     11   ,    12    ,    13    ,      14    ,       15     ];
 
+    % Always write map keys in UPPERCASE.
     % name maps as strcat(indexCategory{i}, 'Text_', indexCategory{j}, '_Map')
     keyText_sport_Map   = containers.Map('KeyType', 'char', 'ValueType', indexClassIntType);
     keyText_sport_Map('OVERS') = 1; keyText_sport_Map('INNS') = 1;  keyText_sport_Map('RR')  = 1;
@@ -127,6 +131,6 @@ function [ ] = db_generateConfig()
     queryText_indexCategory_Map = [queryText_indexCategory_Map; containers.Map(playerText_sport_Map.keys(), 4*ones(1, playerText_sport_Map.length(), indexClassIntType))];
 
 %%  Save above variables in configuration file
-    save(dbConfigFilename);
+    save(db_getDbConfigFileURI());
 
 end

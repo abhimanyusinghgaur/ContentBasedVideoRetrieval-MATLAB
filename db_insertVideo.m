@@ -19,7 +19,7 @@ function [ inserted, msg ] = db_insertVideo( videoURI, indexMap )
     end
 
 %%  Load dbConfig
-    load('dbConfig.mat');
+    load(db_getDbConfigFileURI());
 
 %%  Input Validation
 %   Check if file extension is supported

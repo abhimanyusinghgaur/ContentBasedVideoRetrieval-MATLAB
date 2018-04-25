@@ -3,6 +3,7 @@ function [ output_args ] = TextDetectorLaplacian( inputImgPath )
 %   by
 %   Trung Quy Phan, Palaiahnakote Shivakumara and Chew Lim Tan
 %   School of Computing, National University of Singapore
+%   WARNING: Not Fully Implemented
 
 %% 2.1 Text Detection
 inputImg = imread(inputImgPath);

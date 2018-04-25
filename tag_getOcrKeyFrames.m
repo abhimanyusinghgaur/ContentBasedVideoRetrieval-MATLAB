@@ -3,7 +3,7 @@ function [ ocrFrameFilenames ] = tag_getOcrKeyFrames( videoURI, ocrRegion )
 %   ocrRegion = [cornerNum, minY, maxY]
 
 %%  Load dbConfig
-    load('dbConfig.mat', 'pathSeparator');
+    load(db_getDbConfigFileURI(), 'pathSeparator');
 
 %%  Initial Settings
     heightDivisionFactor = 3;
@@ -93,7 +93,7 @@ function [ ocrFrameFilenames ] = tag_getOcrKeyFrames( videoURI, ocrRegion )
         X = Y;
     end
 
-%%  Return Key Frame Filenames
+%%  Return OCR Key Frame Filenames
     ocrFrameNames = dir([outputFolder, 'ocr_*.png']);
     len = length(ocrFrameNames);
     ocrFrameFilenames = cell(1, len);

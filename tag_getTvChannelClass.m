@@ -3,26 +3,30 @@ function [ tvChannelClass, ocrRegion ] = tag_getTvChannelClass( videoURI )
 %   Detailed explanation goes here
 
 %%  Load dbConfig
-    load('dbConfig.mat', 'indexClassIntType', 'tvChannelClasses', 'expectedLogoCorners');
+    load(db_getDbConfigFileURI(), 'indexClassIntType');
 
 %%  Set initial output vars
     tvChannelClass = 0;
     tvChannelClass = cast(tvChannelClass, indexClassIntType);
+    ocrRegion = zeros(1, 3);
     msg = 'tag_getTvChannelClass: ';
 
-%% Load SVM Model
-    load('LogoModelRealDataWithOriginal.mat', 'classificationMdlSVM');
-    if ~exist('classificationMdlSVM', 'var')
-        disp('Status: SVM Classification Model not found.');
-        disp('Status: Exiting...');
+%%  Load SVM Model
+%   If SVM model has not been generated, generate one with
+%   multiclassLogoTrainer.m script.
+    svmModelFileURI = 'LogoModelRealDataWithOriginal.mat';
+    load(svmModelFileURI, 'classificationMdlSVM', 'tvChannelClasses', 'expectedLogoCorners');
+    if (exist('classificationMdlSVM', 'var')~=1) || (exist('tvChannelClasses', 'var')~=1) || (exist('expectedLogoCorners', 'var')~=1)
+        disp('Status: SVM Classification Model is corrupt.');
+        disp(['Status:', msg, 'Exiting...']);
         return;
     else
         disp('Status: SVM Classification Model Loaded.');
         featureVectorSize = length(classificationMdlSVM.PredictorNames);
     end
 
-%% Find TV Channel Class
-    corners = getKeyframeCorners(videoURI);    disp('Status: Key Frame Corners Extracted.');
+%%  Find TV Channel Class
+    corners = getTimedframeCorners(videoURI);    disp('Status: Timed Frame Corners Extracted.');
     cornerHeight = size(corners,1);
     cornerWidth = size(corners,2);
     numFrames = size(corners, 4);
@@ -125,17 +129,17 @@ function [ tvChannelClass, ocrRegion ] = tag_getTvChannelClass( videoURI )
         CCL = bwconncomp(openedLogoMask(:,:,3));
         CCR = bwconncomp(openedLogoMask(:,:,4));
         stats = cat(1, regionprops(CCL, 'BoundingBox'), regionprops(CCR, 'BoundingBox'));
-        ocrRegion = [3];
+        ocrRegion(1) = 3;
     elseif i==1
 %       football score board covers only left part of screen
         CC = bwconncomp(openedLogoMask(:,:,1));
         stats = regionprops(CC, 'BoundingBox');
-        ocrRegion = [1];
+        ocrRegion(1) = 1;
     else
 %       mostly will never reach here, as logo occurs mostly here
         CC = bwconncomp(openedLogoMask(:,:,2));
         stats = regionprops(CC, 'BoundingBox');
-        ocrRegion = [2];
+        ocrRegion(1) = 2;
     end
     minY = cornerHeight; maxY = 0;
     for i = 1 : size(stats,1)
@@ -148,6 +152,7 @@ function [ tvChannelClass, ocrRegion ] = tag_getTvChannelClass( videoURI )
         end
     end
     
-    ocrRegion = [ocrRegion, minY, maxY];
+    ocrRegion(2) = minY;
+    ocrRegion(3) = maxY;
 
 end

@@ -3,7 +3,7 @@ function [ sportClass ] = tag_getSportClass( ocrTexts )
 %   Detailed explanation goes here
 
 %%  Load dbConfig
-    load('dbConfig.mat', 'indexClassIntType', 'sportClasses', 'teamText_sport_Map', 'playerText_sport_Map', 'keyText_sport_Map');
+    load(db_getDbConfigFileURI(), 'indexClassIntType', 'sportClasses', 'teamText_sport_Map', 'playerText_sport_Map', 'keyText_sport_Map');
 
 %%  Set initial output vars
     sportClass = 0;

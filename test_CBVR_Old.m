@@ -5,5 +5,5 @@ numFiles = length(testFiles);
 for j = 1 : numFiles
     filename = sprintf('%s/%s', testDataDir, testFiles(j).name);
 %     fprintf('Filename: %s\n',filename);
-    CBVR;
+    CBVR_Old;
 end

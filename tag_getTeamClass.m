@@ -3,7 +3,7 @@ function [ teamClass ] = tag_getTeamClass( ocrTexts )
 %   Detailed explanation goes here
 
 %%  Load dbConfig
-    load('dbConfig.mat', 'indexClassIntType', 'teamClasses', 'teamText_team_Map', 'playerText_team_Map');
+    load(db_getDbConfigFileURI(), 'indexClassIntType', 'teamClasses', 'teamText_team_Map', 'playerText_team_Map');
 
 %%  Set initial output vars
     teamClass = 0;

@@ -6,7 +6,7 @@ function [ sanity ] = db_isFrameworkStructureSane()
     sanity = true;
 
 %%  Load dbConfig
-    dbConfigFile = 'dbConfig.mat';
+    dbConfigFile = db_getDbConfigFileURI();
 
     if exist(dbConfigFile, 'file') ~= 2
         db_generateConfig();

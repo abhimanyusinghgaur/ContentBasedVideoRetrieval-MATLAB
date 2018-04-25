@@ -8,7 +8,7 @@ function [ added, msg ] = db_addVideoDbRecord( videoName, extension, indexMap, i
     msg = 'addVideoDbRecord: ';
 
 %%  Load dbConfig
-    load('dbConfig.mat');
+    load(db_getDbConfigFileURI());
 
 %%  Input Formatting
 %   Pad extension with 0, if length is less than maxExtensionChars

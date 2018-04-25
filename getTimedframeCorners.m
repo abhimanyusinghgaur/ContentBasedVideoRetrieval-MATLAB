@@ -1,4 +1,4 @@
-function [ corners ] = getKeyframeCorners( videoURI, requiredFps )
+function [ corners ] = getTimedframeCorners( videoURI, requiredFps )
 %GETKEYFRAMECORNERS  Returns a 5D array of frame corners, where the 4th dimension
 %represents frame number and the 5th dimension represents corner number
 %   Detailed explanation goes here

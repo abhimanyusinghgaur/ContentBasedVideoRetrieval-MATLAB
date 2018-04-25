@@ -3,7 +3,7 @@ function [ playerClass ] = tag_getPlayerClass( ocrTexts )
 %   Detailed explanation goes here
 
 %%  Load dbConfig
-    load('dbConfig.mat', 'indexClassIntType', 'playerClasses', 'playerText_player_Map');
+    load(db_getDbConfigFileURI(), 'indexClassIntType', 'playerClasses', 'playerText_player_Map');
 
 %%  Set initial output vars
     playerClass = 0;

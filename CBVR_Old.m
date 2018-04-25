@@ -1,10 +1,16 @@
 clc;
+% This script Contains  code for classifying TV Channel and finding sport
+% out of Cricket and Football.
+% Below is the video filename on which this script will run.
 filename = 'SonySix/sonySix2-005_2.mp4';
+% If SVM model has not been generated, generate one with
+% multiclassLogoTrainer.m script.
+svmModelFileURI = 'LogoModelRealDataWithOriginal.mat';
 % filename = 'TenSports/Demo.mp4';
 
 %% Load SVM Model
-load('LogoModelRealDataWithOriginal.mat', 'classificationMdlSVM', 'logoClassNames', 'expectedLogoCorners');
-if ~exist('classificationMdlSVM', 'var') || ~exist('logoClassNames', 'var') || ~exist('expectedLogoCorners', 'var')
+load(svmModelFileURI, 'classificationMdlSVM', 'tvChannelClasses', 'expectedLogoCorners');
+if (exist('classificationMdlSVM', 'var')~=1) || (exist('tvChannelClasses', 'var')~=1) || (exist('expectedLogoCorners', 'var')~=1)
     disp('Status: SVM Classification Model not found.');
     disp('Status: Exiting...');
     return;
@@ -28,7 +34,7 @@ if saveResults
 end
 
 %% CBVR Start
-corners = getKeyframeCorners(filename);    disp('Status: Key Frame Corners Extracted.');
+corners = getTimedframeCorners(filename);    disp('Status: Timed Frame Corners Extracted.');
 cornerHeight = size(corners,1);
 cornerWidth = size(corners,2);
 numFrames = size(corners, 4);
@@ -126,18 +132,18 @@ for j = 1 : 4
             end
             labels = predict(classificationMdlSVM, gdFeatures);
             mostOccuringLabel = mode(labels);
-            fprintf('Logo classified as: %s.\n', char(logoClassNames(mostOccuringLabel)));
+            fprintf('Logo classified as: %s.\n', char(tvChannelClasses(mostOccuringLabel)));
 %             check if occurs in expected corner
             if expectedLogoCorners(mostOccuringLabel) == j
 %                 show the classified logo
                 if showOutput
-                    figure('Name',sprintf('Corner %d - ConnComp %d classified as: %s', j, k, char(logoClassNames(mostOccuringLabel))),'NumberTitle','off');
+                    figure('Name',sprintf('Corner %d - ConnComp %d classified as: %s', j, k, char(tvChannelClasses(mostOccuringLabel))),'NumberTitle','off');
                     imshow(imcrop(binaryLogoMask(:,:,j), stats(k).BoundingBox));
                 end
                 if saveResults
-                    imwrite(imcrop(binaryLogoMask(:,:,j), stats(k).BoundingBox), fullfile(resultFolder, sprintf('Step7_Corner%d_%s.png', j, char(logoClassNames(mostOccuringLabel)))));
+                    imwrite(imcrop(binaryLogoMask(:,:,j), stats(k).BoundingBox), fullfile(resultFolder, sprintf('Step7_Corner%d_%s.png', j, char(tvChannelClasses(mostOccuringLabel)))));
                     fileID = fopen(resultFile,'at');
-                    fprintf(fileID, 'Detected Logo: %s, Corner: %d\n', char(logoClassNames(mostOccuringLabel)), j);
+                    fprintf(fileID, 'Detected Logo: %s, Corner: %d\n', char(tvChannelClasses(mostOccuringLabel)), j);
                     fclose(fileID);
                 end
             else

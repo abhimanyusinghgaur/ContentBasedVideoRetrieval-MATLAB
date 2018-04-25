@@ -13,7 +13,7 @@ function [ fullVideoNames, success, msg  ] = db_getFullVideoNames( videoNames )
     msg = 'getFullVideoNames: ';
 
 %%  Load dbConfig
-    load('dbConfig.mat');
+    load(db_getDbConfigFileURI());
 
 %% Input Validation
     if isempty(videoNames)

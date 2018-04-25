@@ -1,4 +1,4 @@
-function [ keyFrames ] = getKeyFrames( videoURI, requiredFps )
+function [ keyFrames ] = getTimedFrames( videoURI, requiredFps )
 %GETKEYFRAMES Summary of this function goes here
 %   Detailed explanation goes here
     if ~exist('requiredFps', 'var')

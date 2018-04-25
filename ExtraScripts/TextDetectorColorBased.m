@@ -1,6 +1,9 @@
 function [ output_args ] = TextDetectorColorBased( inputImgPath )
 %TEXTDETECTORCOLORBASED Summary of this function goes here
-%   Detailed explanation goes here
+%   Own method to try to find text regions in inputImg
+%   Based on assumption that caption text in sport videos is always white
+%   or black. Can be safely changed to consider top and bottom 10%
+%   intensities from the img.
 
 inputImg = imread(inputImgPath);
 grayscaleImg = rgb2gray(inputImg);

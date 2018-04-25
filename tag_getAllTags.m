@@ -3,7 +3,7 @@ function [ indexMap ] = tag_getAllTags( videoURI )
 %   Detailed explanation goes here
 
 %%  Load dbConfig
-    load('dbConfig.mat', 'supportedVideoFormats', 'indexClassIntType', 'indexCategories');
+    load(db_getDbConfigFileURI(), 'supportedVideoFormats', 'indexClassIntType', 'indexCategories');
 
 %%  Set initial output vars
     indexMap = zeros(1, length(indexCategories), indexClassIntType);
@@ -27,7 +27,7 @@ function [ indexMap ] = tag_getAllTags( videoURI )
     disp('Status: OCR Frames Extracted.');
     ocrTexts = tag_getOCRTexts(ocrFrameFilenames);
     for i = 1 : length(ocrTexts)
-        fprintf('Status: File: %s\nDetected Text: %s', ocrFrameFilenames{i}, ocrTexts{i});
+        fprintf('Status: File: %s\nDetected Text: %s\n', ocrFrameFilenames{i}, ocrTexts{i});
     end
     ocrTexts = upper(ocrTexts);
 
